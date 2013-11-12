@@ -46,6 +46,10 @@ namespace EventStore.ClientAPI.Core
 
         private readonly IEventStoreConnection _esConnection;
         private readonly ConnectionSettings _settings;
+
+        private readonly Action<IPEndPoint> _raiseConnectedEvent;
+        private readonly Action<IPEndPoint> _raiseDisconnectedEvent;
+
         private readonly SimpleQueuedHandler _queue = new SimpleQueuedHandler();
         private readonly Timer _timer;
         private IEndPointDiscoverer _endPointDiscoverer;
@@ -64,13 +68,16 @@ namespace EventStore.ClientAPI.Core
         private int _packageNumber;
         private TcpPackageConnection _connection;
 
-        public EventStoreConnectionLogicHandler(IEventStoreConnection esConnection, ConnectionSettings settings)
+        public EventStoreConnectionLogicHandler(IEventStoreConnection esConnection, ConnectionSettings settings,
+            Action<IPEndPoint> raiseConnectedEvent, Action<IPEndPoint> raiseDisconnectedEvent)
         {
             Ensure.NotNull(esConnection, "esConnection");
             Ensure.NotNull(settings, "settings");
 
             _esConnection = esConnection;
             _settings = settings;
+            _raiseConnectedEvent = raiseConnectedEvent;
+            _raiseDisconnectedEvent = raiseDisconnectedEvent;
 
             _operations = new OperationsManager(_esConnection.ConnectionName, settings);
             _subscriptions = new SubscriptionsManager(_esConnection.ConnectionName, settings);
@@ -255,6 +262,8 @@ namespace EventStore.ClientAPI.Core
 
             if (_settings.Disconnected != null)
                 _settings.Disconnected(_esConnection, connection.RemoteEndPoint);
+
+            _raiseDisconnectedEvent(connection.RemoteEndPoint);
         }
 
         private void TcpConnectionEstablished(TcpPackageConnection connection)
@@ -297,6 +306,8 @@ namespace EventStore.ClientAPI.Core
 
             if (_settings.Connected != null)
                 _settings.Connected(_esConnection, _connection.RemoteEndPoint);
+
+            _raiseConnectedEvent(_connection.RemoteEndPoint);
 
             if (_stopwatch.Elapsed - _lastTimeoutsTimeStamp >= _settings.OperationTimeoutCheckPeriod)
             {

@@ -431,12 +431,12 @@ namespace EventStore.ClientAPI
         /// <summary>
         /// Fired when an <see cref="IEventStoreConnection"/> connects to an Event Store server.
         /// </summary>
-        event EventHandler OnConnected;
+        event EventHandler<EventStoreConnectedArgs> OnConnected;
 
         /// <summary>
-        /// Fired when an <see cref="IEventStoreConection"/> is disconnected from an Event Store server
+        /// Fired when an <see cref="IEventStoreConnection"/> is disconnected from an Event Store server
         /// by some means other than by calling the <see cref="Close"/> method.
         /// </summary>
-        event EventHandler OnDisconnected;
+        event EventHandler<EventStoreDisconnectedArgs> OnDisconnected;
     }
 }

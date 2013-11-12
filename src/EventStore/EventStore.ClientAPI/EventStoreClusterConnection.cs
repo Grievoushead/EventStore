@@ -317,5 +317,8 @@ namespace EventStore.ClientAPI
         {
             return _conn.SetSystemSettingsAsync(settings, userCredentials);
         }
+
+        public event EventHandler<EventStoreConnectedArgs> OnConnected = delegate { };
+        public event EventHandler<EventStoreDisconnectedArgs> OnDisconnected = delegate { };
     }
 }

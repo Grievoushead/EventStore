@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI.ClientOperations;
@@ -76,7 +77,17 @@ namespace EventStore.ClientAPI
             _connectionName = connectionName ?? string.Format("ES-{0}", Guid.NewGuid());
             _settings = settings;
             _endPointDiscoverer = endPointDiscoverer;
-            _handler = new EventStoreConnectionLogicHandler(this, settings);
+            _handler = new EventStoreConnectionLogicHandler(this, settings, RaiseConnectedEvent, RaiseDisconnectedEvent);
+        }
+
+        private void RaiseDisconnectedEvent(IPEndPoint remoteEndPoint)
+        {
+            OnDisconnected(this, new EventStoreDisconnectedArgs(remoteEndPoint));
+        }
+
+        private void RaiseConnectedEvent(IPEndPoint remoteEndPoint)
+        {
+            OnConnected(this, new EventStoreConnectedArgs(remoteEndPoint));
         }
 
         public void Connect()
@@ -495,5 +506,8 @@ namespace EventStore.ClientAPI
             return AppendToStreamAsync(SystemStreams.SettingsStream, ExpectedVersion.Any, userCredentials,
                                        new EventData(Guid.NewGuid(), SystemEventTypes.Settings, true, settings.ToJsonBytes(), null));
         }
+
+        public event EventHandler<EventStoreConnectedArgs> OnConnected = delegate { };
+        public event EventHandler<EventStoreDisconnectedArgs> OnDisconnected = delegate { };
     }
 }
