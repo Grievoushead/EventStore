@@ -64,6 +64,7 @@ namespace EventStore.ClientAPI.Core
 
         private ConnectionState _state = ConnectionState.Init;
         private ConnectingPhase _connectingPhase = ConnectingPhase.Invalid;
+        private int _wasConnected;
 
         private int _packageNumber;
         private TcpPackageConnection _connection;
@@ -260,10 +261,13 @@ namespace EventStore.ClientAPI.Core
             _subscriptions.PurgeSubscribedAndDroppedSubscriptions(_connection.ConnectionId);
             _reconnInfo = new ReconnectionInfo(_reconnInfo.ReconnectionAttempt, _stopwatch.Elapsed);
 
-            if (_settings.Disconnected != null)
-                _settings.Disconnected(_esConnection, connection.RemoteEndPoint);
+            if (Interlocked.CompareExchange(ref _wasConnected, 0, 1) == 1)
+            {
+                if (_settings.Disconnected != null)
+                    _settings.Disconnected(_esConnection, connection.RemoteEndPoint);
 
-            _raiseDisconnectedEvent(connection.RemoteEndPoint);
+                _raiseDisconnectedEvent(connection.RemoteEndPoint);
+            }
         }
 
         private void TcpConnectionEstablished(TcpPackageConnection connection)
@@ -304,6 +308,8 @@ namespace EventStore.ClientAPI.Core
             _state = ConnectionState.Connected;
             _connectingPhase = ConnectingPhase.Connected;
 
+            Interlocked.CompareExchange(ref _wasConnected, 1, 0);
+            
             if (_settings.Connected != null)
                 _settings.Connected(_esConnection, _connection.RemoteEndPoint);
 
