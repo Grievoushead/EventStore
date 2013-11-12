@@ -74,15 +74,6 @@ namespace EventStore.ClientAPI
         }
 
         /// <summary>
-        /// Configures the connection not to output log messages. This is the default.
-        /// </summary>
-        public ConnectionSettingsBuilder DoNotLog()
-        {
-            _log = new NoopLogger();
-            return this;
-        }
-
-        /// <summary>
         /// Configures the connection to output log messages to the given <see cref="ILogger" />.
         /// </summary>
         /// <param name="logger">The <see cref="ILogger"/> to use.</param>
@@ -120,16 +111,6 @@ namespace EventStore.ClientAPI
         public ConnectionSettingsBuilder EnableVerboseLogging()
         {
             _verboseLogging = true;
-            return this;
-        }
-
-        /// <summary>
-        /// Turns off excessive <see cref="EventStoreConnection"/> internal logic logging.
-        /// </summary>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder DisableVerboseLogging()
-        {
-            _verboseLogging = false;
             return this;
         }
 
@@ -272,7 +253,7 @@ namespace EventStore.ClientAPI
         }
 
         /// <summary>
-        /// Sets the default <see cref="UserCredentials"> to be used for this connection.
+        /// Sets the default <see cref="UserCredentials"/> to be used for this connection.
         /// If user credentials are not given for an operation, these credentials will be used.
         /// </summary>
         /// <param name="userCredentials"></param>
@@ -295,19 +276,6 @@ namespace EventStore.ClientAPI
             _useSslConnection = true;
             _targetHost = targetHost;
             _validateServer = validateServer;
-            return this;
-        }
-
-        /// <summary>
-        /// Use an unencrypted TCP connection. This should generally not be used with authentication
-        /// as it will send usernames and passwords over the network as plaintext.
-        /// </summary>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder UseNormalConnection()
-        {
-            _useSslConnection = false;
-            _targetHost = null;
-            _validateServer = true;
             return this;
         }
 
@@ -390,16 +358,6 @@ namespace EventStore.ClientAPI
         }
 
         /// <summary>
-        /// Marks that no response from server for request should result in a retry
-        /// </summary>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder DoNotFailOnNoServerResponse()
-        {
-            _failOnNoServerResponse = false;
-            return this;
-        }
-
-        /// <summary>
         /// Sets how often heartbeats should be expected on the connection (lower values detect broken sockets faster)
         /// </summary>
         /// <param name="interval"></param>
@@ -432,6 +390,12 @@ namespace EventStore.ClientAPI
             return this;
         }
 
+        /// <summary>
+        /// Convert the mutable <see cref="ConnectionSettingsBuilder"/> object to an immutable
+        /// <see cref="ConnectionSettings"/> object.
+        /// </summary>
+        /// <param name="builder">The <see cref="ConnectionSettingsBuilder"/> to convert.</param>
+        /// <returns>An immutable <see cref="ConnectionSettings"/> object with the values specified by the builder.</returns>
         public static implicit operator ConnectionSettings(ConnectionSettingsBuilder builder)
         {
             return new ConnectionSettings(builder._log,
