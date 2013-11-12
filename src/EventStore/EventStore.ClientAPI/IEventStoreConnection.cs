@@ -50,6 +50,10 @@ namespace EventStore.ClientAPI
     /// </remarks>
     public interface IEventStoreConnection : IDisposable
     {
+        /// <summary>
+        /// Gets the name of this connection. A connection name can be used for disambiguation
+        /// in log files.
+        /// </summary>
         string ConnectionName { get; }
 
         /// <summary>
@@ -423,5 +427,16 @@ namespace EventStore.ClientAPI
         void SetSystemSettings(SystemSettings settings, UserCredentials userCredentials = null);
         
         Task SetSystemSettingsAsync(SystemSettings settings, UserCredentials userCredentials = null);
+
+        /// <summary>
+        /// Fired when an <see cref="IEventStoreConnection"/> connects to an Event Store server.
+        /// </summary>
+        event EventHandler OnConnected;
+
+        /// <summary>
+        /// Fired when an <see cref="IEventStoreConection"/> is disconnected from an Event Store server
+        /// by some means other than by calling the <see cref="Close"/> method.
+        /// </summary>
+        event EventHandler OnDisconnected;
     }
 }
