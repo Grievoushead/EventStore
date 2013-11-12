@@ -102,15 +102,15 @@ namespace EventStore.ClientAPI
         /// </summary>
         public Action<IEventStoreConnection, Exception> ErrorOccurred;
         /// <summary>
-        /// Raised whenever the connection is closed
+        /// Raised whenever the is closed
         /// </summary>
         public Action<IEventStoreConnection, string> Closed;
         /// <summary>
-        /// Raised whenever the internal connection is connected to the event store
+        /// Raised whenever the connection is connected to the event store
         /// </summary>
         public Action<IEventStoreConnection, IPEndPoint> Connected;
         /// <summary>
-        /// Raised whenever the internal connection is disconnected from the event store
+        /// Raised whenever the connection is disconnected from the event store
         /// </summary>
         public Action<IEventStoreConnection, IPEndPoint> Disconnected;
         /// <summary>
