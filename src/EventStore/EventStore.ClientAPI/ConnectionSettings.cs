@@ -33,6 +33,12 @@ using EventStore.ClientAPI.SystemData;
 
 namespace EventStore.ClientAPI
 {
+    /// <summary>
+    /// A <see cref="ConnectionSettings"/> object is an immutable representation of the settings for an
+    /// <see cref="IEventStoreConnection"/>. A <see cref="ConnectionSettings"/> object can be built using
+    /// a <see cref="ConnectionSettingsBuilder"/>, either via the <see cref="Create"/> method, or via 
+    /// the constructor of <see cref="ConnectionSettingsBuilder"/>.
+    /// </summary>
     public sealed class ConnectionSettings
     {
         private static readonly Lazy<ConnectionSettings> DefaultSettings = new Lazy<ConnectionSettings>(() => Create(), true);
@@ -91,36 +97,22 @@ namespace EventStore.ClientAPI
         /// The amount of time that timeouts are checked in the system.
         /// </summary>
         public readonly TimeSpan OperationTimeoutCheckPeriod;
-
+        /// <summary>
+        /// The <see cref="UserCredentials"/> to use for operations where other <see cref="UserCredentials"/> are not explicitly supplied.
+        /// </summary>
         public readonly UserCredentials DefaultUserCredentials;
+        /// <summary>
+        /// Whether or not the connection is encrypted using SSL.
+        /// </summary>
         public readonly bool UseSslConnection;
+        /// <summary>
+        /// The host name of the server expected on the SSL certificate.
+        /// </summary>
         public readonly string TargetHost;
+        /// <summary>
+        /// Whether or not to validate the server SSL certificate.
+        /// </summary>
         public readonly bool ValidateServer;
-
-        /// <summary>
-        /// Raised whenever the internal error occurs
-        /// </summary>
-        public Action<IEventStoreConnection, Exception> ErrorOccurred;
-        /// <summary>
-        /// Raised whenever the is closed
-        /// </summary>
-        public Action<IEventStoreConnection, string> Closed;
-        /// <summary>
-        /// Raised whenever the connection is connected to the event store
-        /// </summary>
-        public Action<IEventStoreConnection, IPEndPoint> Connected;
-        /// <summary>
-        /// Raised whenever the connection is disconnected from the event store
-        /// </summary>
-        public Action<IEventStoreConnection, IPEndPoint> Disconnected;
-        /// <summary>
-        /// Raised whenever the internal connection is reconnecting to the event store
-        /// </summary>
-        public Action<IEventStoreConnection> Reconnecting;
-        /// <summary>
-        /// Raised whenever the connection default user credentials authentication fails
-        /// </summary>
-        public Action<IEventStoreConnection, string> AuthenticationFailed;
 
         public readonly bool FailOnNoServerResponse;
         public readonly TimeSpan HeartbeatInterval;
@@ -141,12 +133,6 @@ namespace EventStore.ClientAPI
                                     bool useSslConnection,
                                     string targetHost,
                                     bool validateServer,
-                                    Action<IEventStoreConnection, Exception> errorOccurred,
-                                    Action<IEventStoreConnection, string> closed,
-                                    Action<IEventStoreConnection, IPEndPoint> connected,
-                                    Action<IEventStoreConnection, IPEndPoint> disconnected,
-                                    Action<IEventStoreConnection> reconnecting,
-                                    Action<IEventStoreConnection, string> authenticationFailed,
                                     bool failOnNoServerResponse,
                                     TimeSpan heartbeatInterval,
                                     TimeSpan heartbeatTimeout,
@@ -177,13 +163,6 @@ namespace EventStore.ClientAPI
             UseSslConnection = useSslConnection;
             TargetHost = targetHost;
             ValidateServer = validateServer;
-
-            ErrorOccurred = errorOccurred;
-            Closed = closed;
-            Connected = connected;
-            Disconnected = disconnected;
-            Reconnecting = reconnecting;
-            AuthenticationFailed = authenticationFailed;
 
             FailOnNoServerResponse = failOnNoServerResponse;
             HeartbeatInterval = heartbeatInterval;
