@@ -83,6 +83,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllEventsSlice.cs" />
+    <Compile Include="ClientAuthenticationFailedArgs.cs" />
+    <Compile Include="ClientErrorArgs.cs" />
     <Compile Include="ClientOperations\CommitTransactionOperation.cs" />
     <Compile Include="ClientOperations\ReadEventOperation.cs" />
     <Compile Include="ClientOperations\SubscriptionOperation.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="ClientOperations\ReadStreamEventsBackwardOperation.cs" />
     <Compile Include="ClientOperations\StartTransactionOperation.cs" />
     <Compile Include="ClientOperations\TransactionalWriteOperation.cs" />
+    <Compile Include="ClientReconnectingArgs.cs" />
     <Compile Include="Common\Concurrent\ConcurrentQueue.cs" />
     <Compile Include="Common\Concurrent\ConcurrentStack.cs" />
     <Compile Include="Common\Log\ConsoleLogger.cs" />
@@ -101,12 +104,12 @@
     <Compile Include="Common\SystemNames.cs" />
     <Compile Include="Common\Utils\Helper.cs" />
     <Compile Include="Common\Utils\Json.cs" />
+    <Compile Include="ClientClosedArgs.cs" />
     <Compile Include="ConnectionSettings.cs" />
     <Compile Include="ConnectionSettingsBuilder.cs" />
     <Compile Include="ClusterSettings.cs" />
     <Compile Include="ClusterSettingsBuilder.cs" />
-    <Compile Include="EventStoreConnectedArgs.cs" />
-    <Compile Include="EventStoreDisconnectedArgs.cs" />
+    <Compile Include="ClientConnectionArgs.cs" />
     <Compile Include="WriteResult.cs" />
     <Compile Include="SystemSettings.cs" />
     <Compile Include="EventReadResult.cs" />
@@ -115,7 +118,6 @@
     <Compile Include="Core\OperationsManager.cs" />
     <Compile Include="Core\StaticEndPointDiscoverer.cs" />
     <Compile Include="Core\SubscriptionsManager.cs" />
-    <Compile Include="EventStoreClusterConnection.cs" />
     <Compile Include="EventStoreNodeConnection.cs" />
     <Compile Include="Exceptions\ClusterException.cs" />
     <Compile Include="Exceptions\NotAuthenticatedException.cs" />

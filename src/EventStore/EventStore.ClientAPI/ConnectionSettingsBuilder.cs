@@ -24,9 +24,8 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//  
+
 using System;
-using System.Net;
 using EventStore.ClientAPI.Common.Log;
 using EventStore.ClientAPI.Common.Utils;
 using EventStore.ClientAPI.SystemData;
@@ -56,13 +55,6 @@ namespace EventStore.ClientAPI
         private bool _useSslConnection;
         private string _targetHost;
         private bool _validateServer;
-
-        private Action<IEventStoreConnection, Exception> _errorOccurred;
-        private Action<IEventStoreConnection, string> _closed;
-        private Action<IEventStoreConnection, IPEndPoint> _connected;
-        private Action<IEventStoreConnection, IPEndPoint> _disconnected;
-        private Action<IEventStoreConnection> _reconnecting;
-        private Action<IEventStoreConnection, string> _authenticationFailed;
 
         private bool _failOnNoServerResponse;
         private TimeSpan _heartbeatInterval = TimeSpan.FromMilliseconds(750);
@@ -280,74 +272,6 @@ namespace EventStore.ClientAPI
         }
 
         /// <summary>
-        /// Sets handler of internal connection errors.
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder OnErrorOccurred(Action<IEventStoreConnection, Exception> handler)
-        {
-            _errorOccurred = handler;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets handler of <see cref="EventStoreConnection"/> closing. For all disconnections
-        /// use the OnDisconnected handler.
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder OnClosed(Action<IEventStoreConnection, string> handler)
-        {
-            _closed = handler;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets handler called when connection is established.
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder OnConnected(Action<IEventStoreConnection, IPEndPoint> handler)
-        {
-            _connected = handler;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets handler called when connection is dropped.
-        /// This happens on all disconnections. Closed in when the connection is explicitly closed.
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder OnDisconnected(Action<IEventStoreConnection, IPEndPoint> handler)
-        {
-            _disconnected = handler;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets handler called when reconnection attempt is made.
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder OnReconnecting(Action<IEventStoreConnection> handler)
-        {
-            _reconnecting = handler;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets handler called when authentication failure occurs.
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns></returns>
-        public ConnectionSettingsBuilder OnAuthenticationFailed(Action<IEventStoreConnection, string> handler)
-        {
-            _authenticationFailed = handler;
-            return this;
-        }
-
-        /// <summary>
         /// Marks that no response from server should cause an error on the request
         /// </summary>
         /// <returns></returns>
@@ -412,12 +336,6 @@ namespace EventStore.ClientAPI
                                           builder._useSslConnection,
                                           builder._targetHost,
                                           builder._validateServer,
-                                          builder._errorOccurred,
-                                          builder._closed,
-                                          builder._connected,
-                                          builder._disconnected,
-                                          builder._reconnecting,
-                                          builder._authenticationFailed,
                                           builder._failOnNoServerResponse,
                                           builder._heartbeatInterval,
                                           builder._heartbeatTimeout,

@@ -24,10 +24,8 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//  
 
 using System;
-using System.Net;
 using EventStore.ClientAPI.Common.Utils;
 using EventStore.ClientAPI.SystemData;
 
@@ -114,9 +112,20 @@ namespace EventStore.ClientAPI
         /// </summary>
         public readonly bool ValidateServer;
 
+        /// <summary>
+        /// Whether or not to raise an error if no response is received from the server for an operation.
+        /// </summary>
         public readonly bool FailOnNoServerResponse;
+        /// <summary>
+        /// The interval at which to send heartbeat messages.
+        /// </summary>
         public readonly TimeSpan HeartbeatInterval;
+        /// <summary>
+        /// The interval after which an unacknowledged heartbeat will cause the connection to be considered faulted and disconnect.
+        /// </summary>
         public readonly TimeSpan HeartbeatTimeout;
+        
+
         public readonly TimeSpan ClientConnectionTimeout;
 
         internal ConnectionSettings(ILogger log,

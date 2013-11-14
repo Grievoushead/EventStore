@@ -431,12 +431,34 @@ namespace EventStore.ClientAPI
         /// <summary>
         /// Fired when an <see cref="IEventStoreConnection"/> connects to an Event Store server.
         /// </summary>
-        event EventHandler<EventStoreConnectedArgs> OnConnected;
+        event EventHandler<ClientConnectionArgs> Connected;
 
         /// <summary>
         /// Fired when an <see cref="IEventStoreConnection"/> is disconnected from an Event Store server
         /// by some means other than by calling the <see cref="Close"/> method.
         /// </summary>
-        event EventHandler<EventStoreDisconnectedArgs> OnDisconnected;
+        event EventHandler<ClientConnectionArgs> Disconnected;
+
+        /// <summary>
+        /// Fired when an <see cref="IEventStoreConnection"/> is attempting to reconnect to an Event Store
+        /// server following a disconnection.
+        /// </summary>
+        event EventHandler<ClientReconnectingArgs> Reconnecting;
+
+        /// <summary>
+        /// Fired when an <see cref="IEventStoreConnection"/> is closed either using the <see cref="Close"/>
+        /// method, or when reconnection limits are reached without a successful connection being established.
+        /// </summary>
+        event EventHandler<ClientClosedArgs> Closed;
+
+        /// <summary>
+        /// Fired when an error is thrown on an <see cref="IEventStoreConnection"/>.
+        /// </summary>
+        event EventHandler<ClientErrorArgs> ErrorOccurred;
+
+        /// <summary>
+        /// Fired when a client fails to authenticate to an Event Store server.
+        /// </summary>
+        event EventHandler<ClientAuthenticationFailedArgs> AuthenticationFailed;
     }
 }

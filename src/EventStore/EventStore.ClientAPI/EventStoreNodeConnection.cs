@@ -24,12 +24,10 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//  
 
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI.ClientOperations;
@@ -77,17 +75,7 @@ namespace EventStore.ClientAPI
             _connectionName = connectionName ?? string.Format("ES-{0}", Guid.NewGuid());
             _settings = settings;
             _endPointDiscoverer = endPointDiscoverer;
-            _handler = new EventStoreConnectionLogicHandler(this, settings, RaiseConnectedEvent, RaiseDisconnectedEvent);
-        }
-
-        private void RaiseDisconnectedEvent(IPEndPoint remoteEndPoint)
-        {
-            OnDisconnected(this, new EventStoreDisconnectedArgs(remoteEndPoint));
-        }
-
-        private void RaiseConnectedEvent(IPEndPoint remoteEndPoint)
-        {
-            OnConnected(this, new EventStoreConnectedArgs(remoteEndPoint));
+            _handler = new EventStoreConnectionLogicHandler(this, settings);
         }
 
         public void Connect()
@@ -507,7 +495,75 @@ namespace EventStore.ClientAPI
                                        new EventData(Guid.NewGuid(), SystemEventTypes.Settings, true, settings.ToJsonBytes(), null));
         }
 
-        public event EventHandler<EventStoreConnectedArgs> OnConnected = delegate { };
-        public event EventHandler<EventStoreDisconnectedArgs> OnDisconnected = delegate { };
+        public event EventHandler<ClientConnectionArgs> Connected
+        {
+            add
+            {
+                _handler.Connected += value;
+            }
+            remove
+            {
+                _handler.Connected -= value;
+            }
+        }
+
+        public event EventHandler<ClientConnectionArgs> Disconnected
+        {
+            add
+            {
+                _handler.Disconnected += value;
+            }
+            remove
+            {
+                _handler.Disconnected -= value;
+            }
+        }
+        
+        public event EventHandler<ClientReconnectingArgs> Reconnecting
+        {
+            add
+            {
+                _handler.Reconnecting += value;
+            }
+            remove
+            {
+                _handler.Reconnecting -= value;
+            }
+        }
+
+        public event EventHandler<ClientClosedArgs> Closed
+        {
+            add
+            {
+                _handler.Closed += value;
+            }
+            remove
+            {
+                _handler.Closed -= value;
+            }
+        }
+
+        public event EventHandler<ClientErrorArgs> ErrorOccurred
+        {
+            add
+            {
+                _handler.ErrorOccurred += value;
+            }
+            remove
+            {
+                _handler.ErrorOccurred -= value;
+            }
+        }
+        public event EventHandler<ClientAuthenticationFailedArgs> AuthenticationFailed
+        {
+            add
+            {
+                _handler.AuthenticationFailed += value;
+            }
+            remove
+            {
+                _handler.AuthenticationFailed -= value;
+            }
+        }
     }
 }
